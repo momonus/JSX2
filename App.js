@@ -1,163 +1,119 @@
-import * as React from 'react';
-import { Text, View, StyleSheet,ScrollView,TouchableOpacity,TextInput,Alert } from 'react-native';
+import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  Picker,
+  Alert,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
-let names=[];
-let math = [];
-let phy = [];
-let com = [];
+import BMI from './components/Bmi'
 
 export default class App extends React.Component {
- onNameChange(index,text)
- {
-    names[index] = text;
- }
- onMathChange(index,text)
- {
-    math[index] = text;
- }
- onPhyChange(index,text)
- {
-    phy[index] = text;
- }
- onComChange(index,text)
- {
-    com[index] = text;
- }
-  onCalculate()
- {
-    let i;
-    let sum;
-    let max=-1;
-    let index=-1;
-    for(i=0;i<names.length;i++)
-    {
-      sum = math[i]+phy[i]+com[i];
-      if(sum>max)
-      {
-        max=sum;
-        index=i;
-      }
-    }
-    Alert.alert(names[index])
- }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      region: 'Asian',
+      weight: '',
+      height: '',
+      bmi: '',
+    };
+  }
+
+btnPress(){
+  const bmi = new BMI();
+  let w = Number(this.state.weight);
+  let h = Number(this.state.height);
+  let r = this.state.region;
+  const b = bmi.bmiCalculate(w,h);
+  const d = bmi.bmiRegion(w,h,r);
+  Alert.alert(b.toString()+"\n"+d);
+
+}
   render() {
     return (
       <LinearGradient
-       colors={['#7F7FD5', '#86A8E7', '#91EAE4']}
-       style={{flex: 1}}>
-
-       <View style={{flex: 1}}>
-        <ScrollView> 
-          <Text style={styles.txtShow}> Student1 </Text>
+        colors={['#7F7FD5', '#86A8E7', '#91EAE4']}
+        style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: 50 }}>
+          <Text style={styles.txt}>BMI Calculator </Text>
           <TextInput
-            style={styles.inputText}
-            placeholder="Name"
-            onChangeText={(text) => {this.onNameChange(0,text)}}/>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Mathematics"
-            onChangeText={(text) => {this.onMathChange(0,Number(text))}}/>
+            style={styles.txtIn2}
+            placeholder="Weight"
+            onChangeText={text => this.setState({weight:text})}
+            
+          />
 
           <TextInput
-            style={styles.inputText}
-            placeholder="Physic"
-            onChangeText={(text) => {this.onPhyChange(0,Number(text))}}/>
+            style={styles.txtIn2}
+            placeholder="Height"
+            onChangeText={text => this.setState({height:text})}
+            
+          />
 
-          <TextInput
-            style={styles.inputText}
-            placeholder="Computer"
-            onChangeText={(text) => {this.onComChange(0,Number(text))}}/>
-  
-
-
-          <Text style={styles.txtShow}> Student2 </Text>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Name"
-            onChangeText={(text) => {this.onNameChange(1,text)}}/>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Mathematics"
-            onChangeText={(text) => {this.onMathChange(1,Number(text))}}/>
-
-          <TextInput
-            style={styles.inputText}
-            placeholder="Physic"
-            onChangeText={(text) => {this.onPhyChange(1,Number(text))}}/>
-
-          <TextInput
-            style={styles.inputText}
-            placeholder="Computer"
-            onChangeText={(text) => {this.onComChange(1,Number(text))}}/>
-  
           
+            <Picker
+              selectedValue={this.state.region}
+              style={styles.picker}
+               onValueChange={(itemValue, itemIndex) => this.setState({ region: itemValue })}>
+              <Picker.Item label="Asia" value="asia" />
+              <Picker.Item label="Western" value="western" />
+              
+             
+            </Picker>
+      
 
-<Text style={styles.txtShow}> Student3 </Text>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Name"
-            onChangeText={(text) => {this.onNameChange(2,text)}}/>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Mathematics"
-            onChangeText={(text) => {this.onMathChange(2,Number(text))}}/>
-
-          <TextInput
-            style={styles.inputText}
-            placeholder="Physic"
-            onChangeText={(text) => {this.onPhyChange(2,Number(text))}}/>
-
-          <TextInput
-            style={styles.inputText}
-            placeholder="Computer"
-            onChangeText={(text) => {this.onComChange(2,Number(text))}}/>
-  
-          <TouchableOpacity
-            style={styles.touchableUser}
-            onPress={() => this.onCalculate()}>
-            <Text style={styles.txtButton}>Calculate</Text>
+          <TouchableOpacity style={styles.viewBtn}>
+            <Text
+              style={styles.txt}
+              onPress={() => this.btnPress()}>
+              OK
+            </Text>
           </TouchableOpacity>
-          </ScrollView> 
-       </View>
+        </View>
       </LinearGradient>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  txtShow:{
-     margin:5,
-     fontSize : 20,
-     color: 'white'
-  },
-  txtButton:  {
-    fontSize:20, 
-    color:'#ffffff',    
-    textAlign:'center'
-  },
-  inputText: {
-      alignItems: 'center',
-      height:50,
-      backgroundColor: 'transparent',
-      padding: 10,
-      margin:5,
-      marginLeft:10,
-      marginEnd:10,
-      borderRadius: 50,
-      borderColor:'white',
-      borderWidth : 1,
-      fontSize:20,
-  },
-  touchableUser:{
+  txtIn2: {
     alignItems: 'center',
-    padding:10,
-    borderRadius: 50,
-    borderColor:'white',
-    borderWidth : 1,
-    margin:5,
-    marginLeft:10,
-    marginEnd:10,
-    marginTop:25,
+    height: 40,
+    backgroundColor: 'white',
+    padding: 10,
+    margin: 5,
+    marginLeft : 10,
+    marginEnd : 10,
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  viewBtn: {
+    height: 40,
+    backgroundColor: 'white',
+    margin: 10,
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+
+  picker: {
+    height:40,
+    backgroundColor: 'white',
+    padding: 10,
+    margin: 5,
+    marginLeft : 10,
+    marginEnd : 10,
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  txt:{
+    textAlign: 'center',
+    fontSize: 20, 
+    color: '#000000' 
   }
 });
